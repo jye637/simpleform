@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>好朋友聚會 Friends Gathering</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 520px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 12px;
+      font-size: 1.6rem;
+    }
+    .info {
+      background-color: #eef6ff;
+      padding: 14px 18px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      color: #0056b3;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #333;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 11px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .participants-section {
+      margin-top: 30px;
+      border-top: 2px solid #eee;
+      padding-top: 15px;
+    }
+    .participant-list {
+      list-style-type: square;
+      padding-left: 20px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>好朋友聚會<br><span style="font-size: 1.2rem; color: #666;">Friends Gathering</span></h1>
+  
+  <div class="info">
+    📅 <strong>日期 Date：</strong>10/17 (Oct 17)<br>
+    ⏰ <strong>時間 Time：</strong>12:30 PM (12:30 PM)<br>
+    📍 <strong>地點 Location：</strong>高雄市 (Kaohsiung City)
+    📍 <strong>餐廳 Restaurant：</strong>餐廳待決定 (To be decided)
+  </div>
+
+  <form id="signupForm">
+    <div class="form-group">
+      <label for="userName">請輸入姓名 / Name：</label>
+      <input type="text" id="userName" placeholder="例如：帥氣傑克 / e.g., Handsome Jack" required>
+    </div>
+    <button type="submit">送出報名 / Submit</button>
+  </form>
+
+  <div class="participants-section">
+    <h3>目前報名人數 Current Participants：<span id="participantCount">0</span></h3>
+    <ul id="participantList" class="participant-list">
+      <!-- 即時名單 -->
+    </ul>
+  </div>
+
+  <!-- Firebase JavaScript SDK 模組 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      onSnapshot, 
+      query, 
+      orderBy, 
+      serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Firebase 設定檔
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLHiIcnAVltGycimzCFfSN2qTrScqVW0I",
+      authDomain: "simple-form-922df.firebaseapp.com",
+      projectId: "simple-form-922df",
+      storageBucket: "simple-form-922df.firebasestorage.app",
+      messagingSenderId: "51420169968",
+      appId: "1:51420169968:web:3272597f827c2d8a332435",
+      measurementId: "G-SYWJ6PGVMJ"
+    };
+
+    // 初始化 Firebase 與 Firestore
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const signupForm = document.getElementById('signupForm');
+    const userNameInput = document.getElementById('userName');
+    const participantCount = document.getElementById('participantCount');
+    const participantList = document.getElementById('participantList');
+    const registrationsRef = collection(db, "registrations");
+
+    // 1. 處理表單提交
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = userNameInput.value.trim();
+
+      if (!name) return;
+
+      try {
+        await addDoc(registrationsRef, {
+          name: name,
+          createdAt: serverTimestamp()
+        });
+        
+        userNameInput.value = '';
+        alert('報名成功！ / Registration successful!');
+      } catch (error) {
+        console.error("寫入資料失敗: ", error);
+        alert('報名失敗，請稍後再試。 / Registration failed.');
+      }
+    });
+
+    // 2. 即時監聽 Firestore 資料
+    const q = query(registrationsRef, orderBy("createdAt", "asc"));
+    onSnapshot(q, (snapshot) => {
+      participantList.innerHTML = '';
+      participantCount.textContent = snapshot.size;
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.name) {
+          const li = document.createElement('li');
+          li.textContent = data.name;
+          participantList.appendChild(li);
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
