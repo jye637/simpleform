@@ -5,336 +5,413 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>好朋友聚會 Friends Gathering</title>
   <style>
+    :root {
+      --primary: #5b6ef5;
+      --primary-dark: #4153d7;
+      --primary-soft: #eef1ff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --bg: #f4f6fb;
+      --white: #ffffff;
+      --success: #16a34a;
+      --shadow: 0 18px 45px rgba(91, 110, 245, 0.18);
+    }
+
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #eef2ff 0%, #f5f7ff 45%, #f9fafb 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px;
+      color: var(--text);
     }
 
-    .container {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-      max-width: 500px;
-      width: 100%;
+    .page-shell {
+      width: min(100%, 560px);
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
       overflow: hidden;
+      border: 1px solid rgba(91, 110, 245, 0.08);
     }
 
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 40px 20px;
+    .hero {
+      padding: 28px 28px 18px;
+      background: linear-gradient(135deg, var(--primary) 0%, #7b56d8 100%);
+      color: var(--white);
       text-align: center;
-      color: white;
+      position: relative;
     }
 
-    .header h1 {
-      font-size: 1.8rem;
-      margin-bottom: 8px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 20px 0 20px;
+      height: 18px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 18px 18px 0 0;
+      filter: blur(10px);
     }
 
-    .header p {
-      font-size: 0.95rem;
+    .event-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      backdrop-filter: blur(4px);
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.2rem);
+      letter-spacing: 0.04em;
+      margin-bottom: 2px;
+      font-weight: 700;
+    }
+
+    .hero-subtitle {
+      font-size: 0.96rem;
       opacity: 0.9;
-      font-weight: 300;
+      letter-spacing: 0.06em;
     }
 
     .content {
-      padding: 30px;
+      padding: 24px 28px 28px;
+      background: var(--white);
     }
 
-    .info {
-      background-color: #f0f4ff;
-      padding: 18px;
-      border-radius: 8px;
-      margin-bottom: 30px;
-      border-left: 4px solid #667eea;
-      font-size: 0.95rem;
-      line-height: 2;
-      color: #333;
+    .info-card {
+      background: linear-gradient(180deg, var(--primary-soft) 0%, #f6f8ff 100%);
+      border: 1px solid rgba(91,110,245,0.12);
+      border-left: 4px solid var(--primary);
+      border-radius: 16px;
+      padding: 18px 18px 14px;
+      margin-bottom: 24px;
     }
 
-    .info strong {
-      color: #667eea;
-      font-weight: 600;
+    .info-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 0.96rem;
+      color: var(--text);
+      line-height: 1.8;
+      padding: 4px 0;
     }
 
-    .form-group {
-      margin-bottom: 20px;
+    .info-row strong {
+      color: var(--primary-dark);
+      min-width: 86px;
+      display: inline-block;
+    }
+
+    form {
+      margin-top: 4px;
+    }
+
+    .field {
+      margin-bottom: 18px;
     }
 
     label {
       display: block;
-      margin-bottom: 8px;
+      font-size: 0.92rem;
       font-weight: 600;
-      color: #333;
-      font-size: 0.95rem;
-      letter-spacing: 0.3px;
+      color: var(--text);
+      margin-bottom: 8px;
     }
 
     input[type="text"] {
       width: 100%;
-      padding: 12px 14px;
-      border: 1px solid #e0e0e0;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-      background-color: #fafafa;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.96rem;
+      outline: none;
+      background: #fbfcff;
+      transition: 0.2s ease;
     }
 
     input[type="text"]:focus {
-      outline: none;
-      border-color: #667eea;
-      background-color: white;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      border-color: rgba(91,110,245,0.75);
+      box-shadow: 0 0 0 4px rgba(91,110,245,0.08);
+      background: var(--white);
     }
 
     input[type="text"]::placeholder {
-      color: #999;
+      color: #9ca3af;
     }
 
-    .button-group {
-      display: flex;
-      gap: 12px;
-    }
-
-    button {
-      flex: 1;
-      padding: 12px;
+    .submit-btn,
+    .view-btn,
+    .close-btn,
+    .modal-close {
       border: none;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      font-weight: 600;
+      border-radius: 12px;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s ease;
-      letter-spacing: 0.3px;
+      transition: 0.2s ease;
     }
 
     .submit-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary) 0%, #7b56d8 100%);
+      color: var(--white);
+      padding: 14px 16px;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      box-shadow: 0 10px 25px rgba(91,110,245,0.28);
     }
 
     .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(91,110,245,0.34);
     }
 
-    .submit-btn:active {
-      transform: translateY(0);
-    }
-
-    .view-participants-btn {
-      background-color: #f0f4ff;
-      color: #667eea;
-      border: 2px solid #667eea;
-      margin-top: 20px;
+    .view-btn {
       width: 100%;
+      margin-top: 18px;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      border: 1px solid rgba(91,110,245,0.2);
+      padding: 12px 16px;
+      font-size: 0.96rem;
     }
 
-    .view-participants-btn:hover {
-      background-color: #667eea;
-      color: white;
-      transform: translateY(-2px);
+    .view-btn:hover {
+      background: var(--primary);
+      color: var(--white);
     }
 
-    .view-participants-btn:active {
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: rgba(22, 163, 74, 0.96);
+      color: var(--white);
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: 0 12px 32px rgba(22,163,74,0.22);
+      font-size: 0.92rem;
+      opacity: 0;
+      transform: translateY(16px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 1200;
+    }
+
+    .toast.show {
+      opacity: 1;
       transform: translateY(0);
     }
 
     .modal {
       display: none;
       position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
       z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      animation: fadeIn 0.3s ease;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .modal.show {
+      display: flex;
     }
 
-    .modal-content {
-      background-color: white;
-      margin: 10% auto;
-      padding: 0;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-      max-width: 450px;
-      width: 90%;
-      max-height: 70vh;
-      overflow-y: auto;
-      animation: slideIn 0.3s ease;
+    .modal-dialog {
+      width: min(100%, 430px);
+      background: var(--white);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(15, 23, 42, 0.22);
+      animation: slideUp 0.25s ease;
     }
 
-    @keyframes slideIn {
+    @keyframes slideUp {
       from {
-        transform: translateY(-50px);
         opacity: 0;
+        transform: translateY(18px);
       }
       to {
-        transform: translateY(0);
         opacity: 1;
+        transform: translateY(0);
       }
     }
 
     .modal-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 20px;
-      color: white;
+      background: linear-gradient(135deg, var(--primary) 0%, #7b56d8 100%);
+      color: var(--white);
+      padding: 16px 18px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      border-radius: 12px 12px 0 0;
+      justify-content: space-between;
     }
 
     .modal-header h2 {
-      font-size: 1.3rem;
-      margin: 0;
-      font-weight: 600;
+      font-size: 1.12rem;
+      font-weight: 700;
     }
 
-    .close-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 28px;
-      cursor: pointer;
+    .modal-close {
+      background: rgba(255,255,255,0.1);
+      color: var(--white);
       width: 32px;
       height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s ease;
-    }
-
-    .close-btn:hover {
-      transform: rotate(90deg);
+      font-size: 1.4rem;
+      line-height: 1;
     }
 
     .modal-body {
-      padding: 20px;
+      padding: 18px 18px 10px;
     }
 
-    .participants-count {
+    .participants-summary {
       text-align: center;
-      padding: 10px 0;
-      color: #667eea;
-      font-size: 0.9rem;
-      font-weight: 600;
-      border-bottom: 1px solid #e0e0e0;
-      margin-bottom: 15px;
+      color: var(--primary-dark);
+      font-weight: 700;
+      margin-bottom: 14px;
+      font-size: 0.92rem;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
     }
 
     .participant-list {
       list-style: none;
+      max-height: 320px;
+      overflow-y: auto;
     }
 
     .participant-list li {
-      padding: 12px 14px;
-      border-bottom: 1px solid #f0f0f0;
-      color: #333;
-      font-size: 0.95rem;
-      transition: background-color 0.2s ease;
+      padding: 12px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      color: var(--text);
+      font-size: 0.96rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .participant-list li:hover {
-      background-color: #f9f9f9;
-    }
-
-    .participant-list li:last-child {
-      border-bottom: none;
+    .participant-list li::before {
+      content: "✓";
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(91,110,245,0.1);
+      color: var(--primary-dark);
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
     }
 
     .empty-state {
       text-align: center;
-      padding: 30px 20px;
-      color: #999;
-      font-size: 0.95rem;
+      color: var(--muted);
+      padding: 28px 14px 18px;
+      font-size: 0.96rem;
     }
 
-    .empty-state-icon {
-      font-size: 2.5rem;
+    .empty-state .icon {
+      font-size: 2rem;
       margin-bottom: 10px;
-      opacity: 0.5;
+      display: block;
+      opacity: 0.75;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 16px;
+      }
+
+      .content,
+      .hero {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .info-row {
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .info-row strong {
+        min-width: unset;
+      }
     }
   </style>
 </head>
 <body>
-
-  <div class="container">
-    <div class="header">
+  <div class="page-shell">
+    <div class="hero">
+      <div class="event-tag">Event</div>
       <h1>好朋友聚會</h1>
-      <p>Friends Gathering</p>
+      <div class="hero-subtitle">Friends Gathering</div>
     </div>
 
     <div class="content">
-      <div class="info">
-        📅 <strong>日期 Date：</strong>10/17 (Oct 17)<br>
-        ⏰ <strong>時間 Time：</strong>12:30 PM<br>
-        📍 <strong>地點 Location：</strong>高雄市 (Kaohsiung City)<br>
-        🍽️ <strong>餐廳 Restaurant：</strong>餐廳待決定 (To be decided)
+      <div class="info-card">
+        <div class="info-row"><strong>日期</strong><span>10/17 (Oct 17)</span></div>
+        <div class="info-row"><strong>時間</strong><span>12:30 PM</span></div>
+        <div class="info-row"><strong>地點</strong><span>高雄市 (Kaohsiung City)</span></div>
+        <div class="info-row"><strong>餐廳</strong><span>餐廳待決定 (To be decided)</span></div>
       </div>
 
       <form id="signupForm">
-        <div class="form-group">
-          <label for="userName">請輸入姓名 / Name：</label>
+        <div class="field">
+          <label for="userName">請輸入姓名 / Name</label>
           <input type="text" id="userName" placeholder="例如：帥氣傑克 / e.g., Handsome Jack" required>
         </div>
-        <div class="button-group">
-          <button type="submit" class="submit-btn">送出報名 / Submit</button>
-        </div>
+        <button type="submit" class="submit-btn">送出報名 / Submit</button>
       </form>
 
-      <button class="view-participants-btn" id="viewParticipantsBtn">
+      <button class="view-btn" id="viewParticipantsBtn">
         👥 查看報名人員 / View Participants (<span id="participantCountBadge">0</span>)
       </button>
     </div>
   </div>
 
-  <div id="participantsModal" class="modal">
-    <div class="modal-content">
+  <div id="participantsModal" class="modal" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="participantsTitle">
       <div class="modal-header">
-        <h2>報名人員 Participants</h2>
-        <button class="close-btn" id="closeModalBtn">&times;</button>
+        <h2 id="participantsTitle">報名人員 Participants</h2>
+        <button type="button" class="modal-close" id="closeModalBtn" aria-label="Close">&times;</button>
       </div>
       <div class="modal-body">
-        <div class="participants-count">
-          共 <strong id="modalParticipantCount">0</strong> 人報名
-        </div>
-        <ul id="participantList" class="participant-list">
-        </ul>
+        <div class="participants-summary">共 <span id="modalParticipantCount">0</span> 人報名</div>
+        <ul id="participantList" class="participant-list"></ul>
       </div>
     </div>
   </div>
 
+  <div id="toast" class="toast" aria-live="polite">報名成功！ / Registration successful!</div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-      getFirestore, 
-      collection, 
-      addDoc, 
-      onSnapshot, 
-      query, 
-      orderBy, 
-      serverTimestamp 
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      onSnapshot,
+      query,
+      orderBy,
+      serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -358,19 +435,38 @@
     const participantsModal = document.getElementById('participantsModal');
     const viewParticipantsBtn = document.getElementById('viewParticipantsBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
-    const registrationsRef = collection(db, "registrations");
+    const toast = document.getElementById('toast');
+    const registrationsRef = collection(db, 'registrations');
 
-    viewParticipantsBtn.addEventListener('click', () => {
-      participantsModal.style.display = 'block';
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2200);
+    }
+
+    function openModal() {
+      participantsModal.classList.add('show');
+      participantsModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal() {
+      participantsModal.classList.remove('show');
+      participantsModal.setAttribute('aria-hidden', 'true');
+    }
+
+    viewParticipantsBtn.addEventListener('click', openModal);
+    closeModalBtn.addEventListener('click', closeModal);
+
+    participantsModal.addEventListener('click', (event) => {
+      if (event.target === participantsModal) closeModal();
     });
 
-    closeModalBtn.addEventListener('click', () => {
-      participantsModal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (event) => {
-      if (event.target === participantsModal) {
-        participantsModal.style.display = 'none';
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && participantsModal.classList.contains('show')) {
+        closeModal();
       }
     });
 
@@ -382,19 +478,19 @@
 
       try {
         await addDoc(registrationsRef, {
-          name: name,
+          name,
           createdAt: serverTimestamp()
         });
-        
+
         userNameInput.value = '';
-        alert('報名成功！/ Registration successful!');
+        showToast('報名成功！ / Registration successful!');
       } catch (error) {
-        console.error("寫入資料失敗: ", error);
-        alert('報名失敗，請稍後再試。 / Registration failed.');
+        console.error('寫入資料失敗: ', error);
+        showToast('報名失敗，請稍後再試。 / Registration failed.');
       }
     });
 
-    const q = query(registrationsRef, orderBy("createdAt", "asc"));
+    const q = query(registrationsRef, orderBy('createdAt', 'asc'));
     onSnapshot(q, (snapshot) => {
       participantList.innerHTML = '';
       const count = snapshot.size;
@@ -404,20 +500,20 @@
       if (count === 0) {
         const emptyState = document.createElement('div');
         emptyState.className = 'empty-state';
-        emptyState.innerHTML = '<div class="empty-state-icon">📝</div><p>還沒有人報名 / No participants yet</p>';
+        emptyState.innerHTML = '<span class="icon">📝</span><div>還沒有人報名 / No participants yet</div>';
         participantList.appendChild(emptyState);
-      } else {
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          if (data.name) {
-            const li = document.createElement('li');
-            li.textContent = data.name;
-            participantList.appendChild(li);
-          }
-        });
+        return;
       }
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.name) {
+          const li = document.createElement('li');
+          li.textContent = data.name;
+          participantList.appendChild(li);
+        }
+      });
     });
   </script>
-
 </body>
 </html>
